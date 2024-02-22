@@ -1,7 +1,8 @@
 const express = require("express")
 const zod = require("zod")
 const { User } = require("../db")
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { authMiddleware } = require("../middleware");
 require('dotenv').config();
 
 const router = express.Router()
@@ -18,13 +19,17 @@ const signinSchema = zod.object({
     password: zod.string(),
 })
 
+const updateSchema = zod.object({
+    password: zod.string().optional(),
+    firstName: zod.string().optional(),
+    lastName: zod.string().optional()
+})
+
 router.post("/signup", async (req, res)=>{
     try {
         const body = req.body
         const {success} = signupSchema.safeParse(req.body)
-    
-        
-    
+       
         if(!success){
             return res.status(411).json({
                 message: "Email taken / Incorrect inputs"
@@ -87,6 +92,60 @@ router.post("/signin", async (req, res)=>{
         return;
     }
 
+})
+
+router.put("/update", authMiddleware, async (req, res) => {
+    try {
+        const body = req.body
+        const {success} = updateSchema.safeParse(req.body)
+    
+        if(!success) {
+            return res.status(411).json({
+                message: "Incorrect Inputs"
+            })
+        }
+
+        console.log(req.userId)
+
+        await User.updateOne(req.body, {
+            id: req.userId
+        })
+    
+        res.json({
+            message: "Updated successfully"
+        })
+        
+    } catch (error) {
+        console.error("Error in signup:", error);
+        res.status(500).json({ error: error.message || "Internal Server Error" });
+    }
+    
+})
+
+router.get("/bulk", async (req, res) => {
+    const filter = req.query.filter || ""
+
+    const users = await User.find({
+        $or: [{
+            firstName: {
+                "$regex": filter
+            }
+        }, {
+            lastName: {
+                "$regex": filter
+            }
+        }
+        ]
+    })
+
+    res.json({
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
+    })
 })
 
 
