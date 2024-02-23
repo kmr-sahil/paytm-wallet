@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema({
     lastName: String
 })
 
+const User = mongoose.model("User", userSchema)
+
 const accountSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -23,7 +25,6 @@ const accountSchema = new mongoose.Schema({
     }
 })
 
-const User = mongoose.model("User", userSchema)
 const Account = mongoose.model("Account", accountSchema)
 
 module.exports = {

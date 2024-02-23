@@ -1,6 +1,6 @@
 const express = require("express")
 const zod = require("zod")
-const { User } = require("../db")
+const { User, Account } = require("../db")
 const jwt = require("jsonwebtoken");
 const { authMiddleware } = require("../middleware");
 require('dotenv').config();
@@ -47,10 +47,18 @@ router.post("/signup", async (req, res)=>{
         }
     
         const newUser = await User.create(body)
+        const userId = newUser._id
+
+        await Account.create({
+            userId,
+            balance: Math.floor(Math.random() * 10000)
+        })
+
         const token = jwt.sign({
-            userId: newUser._id,
+            userId,
     
         }, process.env.JWT_SECRET)
+
     
         res.status(200).json({
             message: "User created",
@@ -106,10 +114,11 @@ router.put("/update", authMiddleware, async (req, res) => {
         }
 
         console.log(req.userId)
+        console.log(req.body)
 
-        await User.updateOne(req.body, {
-            id: req.userId
-        })
+        await User.findOneAndUpdate({
+            _id: req.userId
+        }, req.body)
     
         res.json({
             message: "Updated successfully"
