@@ -1,10 +1,10 @@
 import React from 'react'
 import {BrowserRouter, Routes, Route} from "react-router-dom"
-import Home from "./components/Home"
-import Signup from "./components/Signup"
-import Signin from "./components/Signin"
-import Dashboard from "./components/Dashboard"
-import SendMoney from './components/Sendmoney'
+import Home from "./pages/Home"
+import Signup from "./pages/Signup"
+import Signin from "./pages/Signin"
+import Dashboard from "./pages/Dashboard"
+import SendMoney from './pages/Sendmoney'
 
 function App() {
 
