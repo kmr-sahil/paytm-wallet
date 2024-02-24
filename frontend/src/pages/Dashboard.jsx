@@ -2,8 +2,13 @@ import {React, useEffect, useState} from 'react'
 import Balanace from '../components/Balanace';
 import User from '../components/User';
 import axios from "axios"
+import Button from '../components/Button';
+import { useNavigate } from 'react-router-dom'
+
 
 function Dashboard() {
+
+  const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState("");
@@ -24,6 +29,11 @@ function Dashboard() {
       get()
   },[filter])
 
+  const onLogout = () => {
+    localStorage.removeItem("token")
+    navigate("/signin")
+  }
+
 
   return (
     <div className='flex flex-col gap-[1rem] justify-end items-center p-[1rem]'>
@@ -32,20 +42,25 @@ function Dashboard() {
 
               <h1 className='text-[1.5rem] font-bold'>PayTM</h1>
 
-              <div className='flex gap-[1rem] items-center'>
+              <div className='flex gap-[1rem] items-center profile'>
 
                 <h3 className='text-[1rem] font-medium'>Hello</h3>
 
-                <div className="rounded-full h-12 w-12 bg-blue-200 flex justify-center">
+                <div className="relative rounded-full h-12 w-12 bg-blue-200 flex justify-center">
                   <div className="flex flex-col justify-center h-full text-xl">
                       U
                   </div>
+
+                  <div className='absolute top-[3rem] right-0 logout'>
+                    <Button title="Logout" onClick={onLogout} />
+                  </div>
+                  
                 </div>
 
               </div>
         </div>
 
-        <div>
+        <div className='w-[100%] sm:w-[36rem] mx-auto'>
             <Balanace/>
 
             <div className='w-[100%] sm:w-[36rem] p-[0.5rem] flex flex-col gap-[0.5rem]'>
