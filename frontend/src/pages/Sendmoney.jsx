@@ -1,12 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Button from '../components/Button';
 import { useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 
 function Sendmoney() {
 
+  const [amount, setAmount] = useState(0)
   const [searchParams] = useSearchParams()
   const id = searchParams.get("id")
   const name = searchParams.get("name")
+
+  const onClick = async() => {
+    try {
+        const tokenStr = localStorage.getItem("token")
+        const response = await axios.post("http://localhost:8000/api/v1/account/transfer",
+        {to: id, amount: amount}, 
+        { headers: {"Authorization" : `Bearer ${tokenStr}`} })
+
+        console.log(response.data)
+    } catch (error) {
+        console.log("Tran error" , error.response)
+    }
+  }
 
   return (
     <div className='container gap-[1rem]'>
@@ -31,10 +46,11 @@ function Sendmoney() {
                   className="outline outline-offset-2 outline-[0.5px] rounded-[2px] px-[0.5rem] py-[0.2rem] outline-zinc-400"
                   id="amount"
                   placeholder="Enter amount"
+                  onChange={(e) => {setAmount(e.target.value)}}
               />
         </div>
         
-        <Button title="Initiate Transfer" onClick={() => {console.log("transfered")}}/>
+        <Button title="Initiate Transfer" onClick={onClick}/>
 
     </div>
   )
