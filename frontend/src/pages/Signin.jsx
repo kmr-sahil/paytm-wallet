@@ -22,7 +22,7 @@ function Signin() {
     const verify = async () => {
       try {
         
-        const response = await axios.get(`${process.env.BASE_URL}/api/v1/user/verifyme`, { headers: { "Authorization": `Bearer ${token}` } });
+        const response = await axios.get(`https://paytm-wallet-lh5s.onrender.com/api/v1/user/verifyme`, { headers: { "Authorization": `Bearer ${token}` } });
         if (response.data.user) navigate("/dashboard");
         
       } catch (error) {
@@ -46,7 +46,7 @@ function Signin() {
   const onClick = async () => {
     try {
       setLoad(true);
-      const response = await axios.post(`${process.env.BASE_URL}/api/v1/user/signin`, userDetails);
+      const response = await axios.post(`https://paytm-wallet-lh5s.onrender.com/api/v1/user/signin`, userDetails);
       const token = response?.data?.token; // Access token safely
       if (token) {
         localStorage.setItem("token", token);

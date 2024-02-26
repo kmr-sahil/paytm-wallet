@@ -16,7 +16,7 @@ function Sendmoney() {
     const verify = async () => {
       try {
         
-        const response = await axios.get(`${process.env.BASE_URL}/api/v1/user/verifyme`, { headers: { "Authorization": `Bearer ${token}` } });
+        const response = await axios.get(`https://paytm-wallet-lh5s.onrender.com/api/v1/user/verifyme`, { headers: { "Authorization": `Bearer ${token}` } });
 
       } catch (error) {
         console.error("Verification error:", error);
@@ -43,7 +43,7 @@ function Sendmoney() {
       setLoad(true);
       const tokenStr = localStorage.getItem('token');
       const response = await axios.post(
-        `${process.env.BASE_URL}/api/v1/account/transfer`,
+        `https://paytm-wallet-lh5s.onrender.com/api/v1/account/transfer`,
         { to: id, amount: amount },
         { headers: { Authorization: `Bearer ${tokenStr}` } }
       );
