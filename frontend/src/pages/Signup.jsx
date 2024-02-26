@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import axios from "axios"
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 function Signup() {
@@ -17,21 +17,19 @@ function Signup() {
   })
 
   useEffect(() => {
-    const token  = localStorage.getItem("token") || null
-
-    const verify = async() => {
-      const response = await axios.get("http://localhost:8000/api/v1/user/verifyme", { headers: {"Authorization" : `Bearer ${token}`} })
-      if(response.data.user){
-        navigate("/dashboard")
+    const token = localStorage.getItem("token") || null;
+  
+    const verify = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/v1/user/verifyme`, { headers: { "Authorization": `Bearer ${token}` } });
+        if (response.data.user) navigate("/dashboard");
+      } catch (error) {
+        console.error("Verification error:", error);
       }
-    }
-
-    if(token){
-      verify()
-      return
-    }
-
-  },[])
+    };
+  
+    if (token) verify();
+  }, []);
 
   const handleInputChange = (e, field) => {
     setUserDetails(prevState => ({
@@ -71,6 +69,8 @@ function Signup() {
       <Input label="Password" placeholder="123" onChange={(e) => handleInputChange(e, 'password')} />
 
       <Button title="Submit" onClick={onClick}/>
+
+      <Link to={"/signin"}>Already have a account ? Sign In</Link>
 
     </div>
   )
