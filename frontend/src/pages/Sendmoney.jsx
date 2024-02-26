@@ -1,14 +1,41 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '../components/Button';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'
+
 
 function Sendmoney() {
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token  = localStorage.getItem("token") || false
+
+    const verify = async () => {
+      try {
+        
+        const response = await axios.get("http://localhost:8000/api/v1/user/verifyme", { headers: { "Authorization": `Bearer ${token}` } });
+
+      } catch (error) {
+        console.error("Verification error:", error);
+        navigate("/signin");
+      }
+    };
+
+    if(!token){
+      navigate("/signin")
+    } else {      
+      verify()
+      return
+    } 
+
+  },[])
+
   const [amount, setAmount] = useState(0)
   const [searchParams] = useSearchParams()
-  const id = searchParams.get("id")
-  const name = searchParams.get("name")
+  const id = searchParams.get("id") || ""
+  const name = searchParams.get("name") || ""
 
   const onClick = async() => {
     try {
@@ -18,6 +45,7 @@ function Sendmoney() {
         { headers: {"Authorization" : `Bearer ${tokenStr}`} })
 
         console.log(response.data)
+        navigate("/dashboard")
     } catch (error) {
         console.log("Tran error" , error.response)
     }

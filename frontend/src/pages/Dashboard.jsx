@@ -10,8 +10,33 @@ function Dashboard() {
 
   const navigate = useNavigate();
 
+  const [username, setUsername] = useState("")
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState("");
+
+  useEffect(() => {
+    const token  = localStorage.getItem("token") || false
+
+    const verify = async () => {
+      try {
+        
+        const response = await axios.get("http://localhost:8000/api/v1/user/verifyme", { headers: { "Authorization": `Bearer ${token}` } });
+        setUsername(response.data.user);
+
+      } catch (error) {
+        console.error("Verification error:", error);
+        navigate("/signin");
+      }
+    };
+
+    if(!token){
+      navigate("/signin")
+    } else {      
+      verify()
+      return
+    } 
+
+  },[])
 
   useEffect(() => {
       async function get(){
@@ -48,7 +73,7 @@ function Dashboard() {
 
                 <div className="relative rounded-full h-12 w-12 bg-blue-200 flex justify-center">
                   <div className="flex flex-col justify-center h-full text-xl">
-                      U
+                      {username[0]}
                   </div>
 
                   <div className='absolute top-[3rem] right-0 logout'>

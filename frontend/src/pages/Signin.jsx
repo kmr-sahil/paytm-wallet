@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import axios from "axios"
@@ -12,6 +12,23 @@ function Signin() {
     username: "",
     password: "",
   })
+
+  useEffect(() => {
+    const token  = localStorage.getItem("token") || null
+
+    const verify = async() => {
+      const response = await axios.get("http://localhost:8000/api/v1/user/verifyme", { headers: {"Authorization" : `Bearer ${token}`} })
+      if(response.data.user){
+        navigate("/dashboard")
+      }
+    }
+
+    if(token){
+      verify()
+      return
+    }
+
+  },[])
 
   const handleInputChange = (e, field) => {
     setUserDetails(prevState => ({
