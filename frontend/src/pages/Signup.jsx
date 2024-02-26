@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom'
 
 function Signup() {
 
+  console.log(process.env.BASE_URL)
+
   const navigate = useNavigate();
 
   const [load, setLoad] = useState(false)
