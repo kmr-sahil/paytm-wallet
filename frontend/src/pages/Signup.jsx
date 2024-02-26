@@ -23,7 +23,7 @@ function Signup() {
   
     const verify = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/user/verifyme`, { headers: { "Authorization": `Bearer ${token}` } });
+        const response = await axios.get(`${process.env.BASE_URL}/api/v1/user/verifyme`, { headers: { "Authorization": `Bearer ${token}` } });
         if (response.data.user) navigate("/dashboard");
       } catch (error) {
         console.error("Verification error:", error);
@@ -44,7 +44,7 @@ function Signup() {
   const onClick = async () => {
     try {
       setLoad(true);
-      const response = await axios.post("http://localhost:8000/api/v1/user/signup", userDetails);
+      const response = await axios.post(`${process.env.BASE_URL}/api/v1/user/signup`, userDetails);
       const token = response?.data?.token; // Access token safely
       if (token) {
         localStorage.setItem("token", token);

@@ -22,7 +22,7 @@ function Dashboard() {
     const verify = async () => {
       try {
         
-        const response = await axios.get("http://localhost:8000/api/v1/user/verifyme", { headers: { "Authorization": `Bearer ${token}` } });
+        const response = await axios.get(`${process.env.BASE_URL}/api/v1/user/verifyme`, { headers: { "Authorization": `Bearer ${token}` } });
         setUsername(response.data.user);
 
       } catch (error) {
@@ -45,7 +45,7 @@ function Dashboard() {
       try {
         setLoad(true);
         const tokenStr = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8000/api/v1/user/bulk?filter=" + filter, { headers: { "Authorization": `Bearer ${tokenStr}` } });
+        const response = await axios.get(`${process.env.BASE_URL}/api/v1/user/bulk?filter=` + filter, { headers: { "Authorization": `Bearer ${tokenStr}` } });
         setUsers(response.data.user);
       } catch (error) {
         console.log("Bulk error - ", error.response);

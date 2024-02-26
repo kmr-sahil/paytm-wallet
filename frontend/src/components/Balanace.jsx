@@ -9,7 +9,7 @@ function Balanace() {
     async function get(){
       try {
         const tokenStr = localStorage.getItem("token")
-        const response = await axios.get("http://localhost:8000/api/v1/account/balance" , { headers: {"Authorization" : `Bearer ${tokenStr}`} })
+        const response = await axios.get(`${process.env.BASE_URL}/api/v1/account/balance` , { headers: {"Authorization" : `Bearer ${tokenStr}`} })
         console.log(response)
     
         setBalance(response.data.balance)
