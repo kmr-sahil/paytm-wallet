@@ -9,10 +9,10 @@ const router = express.Router()
 
 const signupSchema = zod.object({
     username: zod.string(),
-    password: zod.string(),
-    firstName: zod.string(),
+    password: zod.string().min(3),
+    firstName: zod.string().min(1),
     lastName: zod.string()
-})
+}).strict()
 
 const signinSchema = zod.object({
     username: zod.string(),
@@ -28,10 +28,10 @@ const updateSchema = zod.object({
 router.post("/signup", async (req, res)=>{
     try {
         const body = req.body
-        const {success} = signupSchema.safeParse(req.body)
+        const { success} = signupSchema.safeParse(req.body);
        
         if(!success){
-            return res.status(411).json({
+            return res.status(400).json({
                 message: "Email taken / Incorrect inputs"
             })
         }
@@ -99,7 +99,14 @@ router.post("/signin", async (req, res)=>{
             token: token
         })
         return;
+    } else {
+        res.status(411).json({
+            message: "username or password is wrong"
+        })
+        return;
     }
+
+
     } catch (error) {
         console.error("Error in signin:", error);
         res.status(500).json({ error: error.message || "Internal Server Error" });
