@@ -75,8 +75,9 @@ router.post("/signup", async (req, res)=>{
 
 router.post("/signin", async (req, res)=>{
 
-    const body = req.body
-    const {success} = signinSchema.safeParse(req.body)
+    try {
+        const body = req.body
+        const {success} = signinSchema.safeParse(req.body)
 
     if(!success) {
         return res.status(411).json({
@@ -99,6 +100,11 @@ router.post("/signin", async (req, res)=>{
         })
         return;
     }
+    } catch (error) {
+        console.error("Error in signin:", error);
+        res.status(500).json({ error: error.message || "Internal Server Error" });
+    }
+
 
 })
 
@@ -125,14 +131,15 @@ router.put("/update", authMiddleware, async (req, res) => {
         })
         
     } catch (error) {
-        console.error("Error in signup:", error);
+        console.error("Error in update:", error);
         res.status(500).json({ error: error.message || "Internal Server Error" });
     }
     
 })
 
 router.get("/bulk", authMiddleware, async (req, res) => {
-    const filter = req.query.filter || ""
+    try {
+        const filter = req.query.filter || ""
 
     const users = await User.find({
         $or: [{
@@ -155,6 +162,34 @@ router.get("/bulk", authMiddleware, async (req, res) => {
             _id: user._id
         }))
     })
+    } catch (error) {
+        console.error("Error in getting users:", error);
+        res.status(500).json({ error: error.message || "Internal Server Error" });
+    }
+    
+})
+
+router.get("/verifyme", authMiddleware, async(req, res) => {
+    try {
+        const isValid = await User.findOne({_id: req.userId})
+
+        if(!isValid) {
+            return res.status(411).json({
+                user: ""
+            })
+        }
+
+        res.status(200).json({
+            user: isValid.username,
+        })
+
+        return
+
+
+    } catch (error) {
+        console.error("Error in verifying user:", error);
+        res.status(500).json({ error: error.message || "Internal Server Error" });
+    }
 })
 
 
